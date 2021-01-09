@@ -1,6 +1,7 @@
 {
   "name": "@adaptivelink/kv",
-  "version": "0.1.0",
+  "version": "0.1.1",
+  "description": "KV Solution for Cloudflare Worker and Stackpath Serverless Scripting",
   "module": "dist/kv.esm.js",
   "types": "dist/main.d.ts",
   "repository": {
@@ -13,13 +14,20 @@
   "bugs": {
     "url": "https://github.com/adaptive/kv/issues"
   },
-  "homepage": "https://github.com/adaptive/pops#readme",
+  "homepage": "https://github.com/adaptive/kv#readme",
   "author": "Hugo Romano <adaptive@hey.com>",
   "keywords": [
     "cloudflare",
+    "stackpath",
     "kv",
     "storage",
-    "workers"
+    "workers",
+    "key",
+    "values",
+    "tore",
+    "persist",
+    "save",
+    "config"
   ],
   "license": "MIT",
   "private": false,
