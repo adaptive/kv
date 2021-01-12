@@ -7,8 +7,9 @@ const KV = class {
   /**
    * @param {string} namespace - namespace id
    */
-  constructor(namespace = "main") {
+  constructor(namespace = "main", options = false) {
     this.namespace = namespace;
+    this.options = options;
     this.prefix = `https://${KV_S3_BUCKET}/${namespace}`;
     this.aws = new AwsClient({
       accessKeyId: KV_ACCESS_KEY_ID,

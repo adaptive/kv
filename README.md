@@ -15,18 +15,29 @@ npm i @adaptivelink/kv
 ```
 
 ## ⚙️ Environment Variables
+You need to configured the variables (Environment or Global) with your vendor data.
+
 * KV_ACCESS_KEY_ID
 * KV_SECRET_ACCESS_KEY 🔒
 * KV_DEFAULT_REGION
 * KV_S3_BUCKET
 
-## 💻 Basic Usage
+## 💻 Basic Usage in Coudflare & Stackpath
 
 ```javascript
-const Namespace = new KV("namespace");
+import KV from "@adaptivelink/kv";
+
+const NAMESPACE = new KV("namespace");
 
 const handleRequest = async event => {
 
-event.waitUntil(await Namespace.put("hello","world"));
+    event.waitUntil(await NAMESPACE.put("hello","world"));
 
+}
 ```
+
+## 💻 Methods
+
+### Writing Key-value pair
+
+`await NAMESPACE.put(key, value)`
