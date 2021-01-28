@@ -26,7 +26,7 @@ You need to configured the variables (Environment or Global) with your vendor da
 
 🔒 _Should be stored as environment encrypted variable, avoid global variable._
 
-## 🔓 Basic Usage in Coudflare & Stackpath
+## 🔓 Basic Usage in Cloudflare & Stackpath
 
 ```javascript
 import KV from "@adaptivelink/kv";
