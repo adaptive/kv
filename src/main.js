@@ -113,7 +113,11 @@ const KV = class {
    */
   async delete(key) {
     if (!key) throw "missing key on .delete()";
-    await this.aws.fetch(`${this.prefix}/${key}`, {
+    let suffix;
+    if (this.config.passphrase != null) {
+      suffix = ".enc";
+    }
+    await this.aws.fetch(`${this.prefix}/${key}${suffix}`, {
       method: "DELETE"
     });
     return true;
