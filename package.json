@@ -35,7 +35,7 @@
   "license": "MIT",
   "private": false,
   "dependencies": {
-    "@adaptivelink/pops": "0.2.16",
+    "@adaptivelink/pops": "0.2.17",
     "aws4fetch": "1.0.13"
   },
   "devDependencies": {
