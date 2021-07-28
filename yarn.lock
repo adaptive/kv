@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"@adaptivelink/pops@0.3.5":
-  version "0.3.5"
-  resolved "https://registry.yarnpkg.com/@adaptivelink/pops/-/pops-0.3.5.tgz#3ffb4d7af6bf93b32ba2226468e44d8cd8c10166"
-  integrity sha512-Rc0sDJUUVfBgh1JswjBsEZxBMtE+rhZ/wkxMcbA4zzPV+R8jI5nxgwwSGbGFCRRAQjj0YkuNNi3yczL6kFEXDA==
+"@adaptivelink/pops@0.3.6":
+  version "0.3.6"
+  resolved "https://registry.yarnpkg.com/@adaptivelink/pops/-/pops-0.3.6.tgz#a4ada743869fd5ed49aa1fadd92f19c4922de49b"
+  integrity sha512-DVNTtBQwJEipr2QxhNcscst9Vmw9hFx65EHHa+k5P8hbtkaaxbtkkRaiyW6f6it+lsyHbr2VRdeQImSJeK9RdA==
 
 "@babel/code-frame@^7.10.4":
   version "7.12.11"
