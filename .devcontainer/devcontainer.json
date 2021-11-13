@@ -5,7 +5,7 @@
     "bungcip.better-toml",
     "coenraads.bracket-pair-colorizer",
     "mkxml.vscode-filesize",
-    "github.codespaces"
+    "github.copilot"
   ],
   "build": {
     "dockerfile": "Dockerfile",
