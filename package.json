@@ -39,7 +39,7 @@
     "url": "https://github.com/sponsors/adaptive"
   },
   "dependencies": {
-    "@adaptivelink/pops": "0.4.20",
+    "@adaptivelink/pops": "0.4.22",
     "aws4fetch": "1.0.17"
   },
   "devDependencies": {
