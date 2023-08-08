@@ -1,9 +1,13 @@
 lockfileVersion: '6.0'
 
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
 dependencies:
   '@adaptivelink/pops':
-    specifier: 0.5.4
-    version: 0.5.4
+    specifier: 0.5.5
+    version: 0.5.5
   aws4fetch:
     specifier: 1.0.17
     version: 1.0.17
@@ -30,8 +34,8 @@ devDependencies:
 
 packages:
 
-  /@adaptivelink/pops@0.5.4:
-    resolution: {integrity: sha512-w2VIbmQ96odY+BL52ZTl5bJnBqXvcuBXALQbmI3pSANPW21fqPxkdd84l1GlydWBZZoKA8QLwCoEiCXiG3GsaQ==}
+  /@adaptivelink/pops@0.5.5:
+    resolution: {integrity: sha512-sHdkwhaojb/saRXaSYvK/SemG3uQKBNwrlBDPYQEoYTXvRFoG60ibA37CGwSGz1kmTLQ544OxRHpQi7kxrTAgg==}
     dev: false
 
   /@babel/code-frame@7.18.6:
