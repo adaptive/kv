@@ -44,7 +44,7 @@
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "25.0.5",
-    "@rollup/plugin-node-resolve": "15.2.2",
+    "@rollup/plugin-node-resolve": "15.2.3",
     "prettier": "3.0.3",
     "rollup": "2.79.1",
     "rollup-plugin-cleanup": "3.2.1",
