@@ -6,8 +6,8 @@ settings:
 
 dependencies:
   '@adaptivelink/pops':
-    specifier: 0.5.7
-    version: 0.5.7
+    specifier: 0.5.8
+    version: 0.5.8
   aws4fetch:
     specifier: 1.0.17
     version: 1.0.17
@@ -34,8 +34,8 @@ devDependencies:
 
 packages:
 
-  /@adaptivelink/pops@0.5.7:
-    resolution: {integrity: sha512-NIMKSzqN5kOV+AhbHmDSSn1bQFLRWy3vRmZUcFOSjlLZ+6ZKL4qQ+Fy36rwpXvqwgHuPy9Uy5rl1g8DXkcMb2w==}
+  /@adaptivelink/pops@0.5.8:
+    resolution: {integrity: sha512-AvhUgeD+qjKbDHQLI4IuxXmE99DI39UmCDKOWLPoeCDpOB0m1H2Tef7GVWaLxKf7Gok6qbSpRr2VZaHNYonvNw==}
     dev: false
 
   /@babel/code-frame@7.18.6:
