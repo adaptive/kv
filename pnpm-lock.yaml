@@ -9,8 +9,8 @@ dependencies:
     specifier: 0.5.8
     version: 0.5.8
   aws4fetch:
-    specifier: 1.0.17
-    version: 1.0.17
+    specifier: 1.0.18
+    version: 1.0.18
 
 devDependencies:
   '@rollup/plugin-commonjs':
@@ -176,8 +176,8 @@ packages:
       color-convert: 1.9.3
     dev: true
 
-  /aws4fetch@1.0.17:
-    resolution: {integrity: sha512-4IbOvsxqxeOSxI4oA+8xEO8SzBMVlzbSTgGy/EF83rHnQ/aKtP6Sc6YV/k0oiW0mqrcxuThlbDosnvetGOuO+g==}
+  /aws4fetch@1.0.18:
+    resolution: {integrity: sha512-3Cf+YaUl07p24MoQ46rFwulAmiyCwH2+1zw1ZyPAX5OtJ34Hh185DwB8y/qRLb6cYYYtSFJ9pthyLc0MD4e8sQ==}
     dev: false
 
   /balanced-match@1.0.2:
