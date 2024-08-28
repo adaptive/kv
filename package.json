@@ -40,7 +40,7 @@
   },
   "dependencies": {
     "@adaptivelink/pops": "0.5.8",
-    "aws4fetch": "1.0.19"
+    "aws4fetch": "1.0.20"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "25.0.7",
