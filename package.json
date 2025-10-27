@@ -43,7 +43,7 @@
     "aws4fetch": "1.0.20"
   },
   "devDependencies": {
-    "@rollup/plugin-commonjs": "28.0.8",
+    "@rollup/plugin-commonjs": "28.0.9",
     "@rollup/plugin-node-resolve": "16.0.3",
     "prettier": "3.6.2",
     "rollup": "4.52.5",
