@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@adaptivelink/pops':
-        specifier: 0.5.8
-        version: 0.5.8
+        specifier: 0.6.0
+        version: 0.6.0
       aws4fetch:
         specifier: 1.0.20
         version: 1.0.20
@@ -36,8 +36,8 @@ importers:
 
 packages:
 
-  '@adaptivelink/pops@0.5.8':
-    resolution: {integrity: sha512-AvhUgeD+qjKbDHQLI4IuxXmE99DI39UmCDKOWLPoeCDpOB0m1H2Tef7GVWaLxKf7Gok6qbSpRr2VZaHNYonvNw==}
+  '@adaptivelink/pops@0.6.0':
+    resolution: {integrity: sha512-p14lfcRzZDSaxIvB1H7wBpcvbHTbnyTlAXQS0JRvZbcPu/HBIRbMyS/hGrNrFsKFmxix2eE/2wwUQqvDAIc+jA==}
 
   '@jridgewell/gen-mapping@0.3.13':
     resolution: {integrity: sha512-2kkt/7niJ6MgEPxF0bYdQ6etZaA+fQvDcLKckhy1yIQOzaoKjBBjSj63/aLVjYE3qhRt5dvM+uUyfCg6UKCBbA==}
@@ -359,7 +359,7 @@ packages:
 
 snapshots:
 
-  '@adaptivelink/pops@0.5.8': {}
+  '@adaptivelink/pops@0.6.0': {}
 
   '@jridgewell/gen-mapping@0.3.13':
     dependencies:
