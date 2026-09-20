@@ -1,18 +1,16 @@
 {
-  "extensions": [
-    "dbaeumer.vscode-eslint",
-    "eg2.vscode-npm-script",
-    "bungcip.better-toml",
-    "coenraads.bracket-pair-colorizer",
-    "mkxml.vscode-filesize",
-    "github.copilot"
-  ],
+  "customizations": {
+    "vscode": {
+      "extensions": ["esbenp.prettier-vscode", "github.copilot"]
+    }
+  },
   "build": {
     "dockerfile": "Dockerfile",
     "args": {
-      "VARIANT": "16-bullseye"
+      "VARIANT": "26-bookworm"
     }
   },
+  "postCreateCommand": "pnpm install --frozen-lockfile",
   "runArgs": ["--init"],
   "remoteUser": "node"
 }

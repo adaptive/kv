@@ -1,14 +1,15 @@
-import { createRequire } from "node:module";
-import cleanup from "rollup-plugin-cleanup";
+import { copyFile } from "node:fs/promises";
 import terser from "@rollup/plugin-terser";
-
-const require = createRequire(import.meta.url);
-const pkg = require("./package.json");
 
 export default {
   input: "src/main.js",
-  output: [{ format: "esm", file: pkg.module }],
-  plugins: [cleanup(), terser({ module: true, maxWorkers: 1 })],
-  external: ["aws4fetch"]
+  output: [{ format: "esm", file: "dist/kv.esm.js" }],
+  plugins: [
+    terser({ module: true, maxWorkers: 1 }),
+    {
+      name: "copy-types",
+      writeBundle: () => copyFile("src/main.d.ts", "dist/main.d.ts"),
+    },
+  ],
+  external: ["aws4fetch"],
 };
-

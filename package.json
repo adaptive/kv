@@ -1,9 +1,9 @@
 {
   "name": "@adaptivelink/kv",
   "version": "0.2.2",
-  "description": "KV Solution for Cloudflare Worker and Stackpath Serverless Scripting",
-  "module": "dist/kv.esm.js",
-  "types": "dist/main.d.ts",
+  "description": "S3-backed key/value storage for Cloudflare Workers and Fetch-compatible runtimes",
+  "module": "./dist/kv.esm.js",
+  "types": "./dist/main.d.ts",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/adaptive/kv.git"
@@ -39,22 +39,37 @@
     "url": "https://github.com/sponsors/adaptive"
   },
   "dependencies": {
-    "@adaptivelink/pops": "0.6.1",
     "aws4fetch": "1.0.20"
   },
   "devDependencies": {
-    "@rollup/plugin-commonjs": "29.0.3",
-    "@rollup/plugin-node-resolve": "16.0.3",
-    "prettier": "3.9.6",
-    "rollup": "4.62.4",
-    "rollup-plugin-cleanup": "3.2.1",
-    "@rollup/plugin-terser": "1.0.0"
+    "@rollup/plugin-terser": "1.0.0",
+    "prettier": "3.9.8",
+    "rollup": "4.63.4",
+    "typescript": "7.0.2"
   },
   "files": [
     "dist"
   ],
   "scripts": {
     "build": "rollup -c",
+    "test": "node --test test/*.test.js",
+    "test:types": "tsc -p test/tsconfig.json",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "check": "npm run format:check && npm run build && npm test && npm run test:types",
+    "prepack": "npm run build",
     "dry-run": "npm pack --dry-run"
-  }
+  },
+  "type": "module",
+  "main": "./dist/kv.esm.js",
+  "exports": {
+    ".": {
+      "types": "./dist/main.d.ts",
+      "import": "./dist/kv.esm.js",
+      "default": "./dist/kv.esm.js"
+    },
+    "./dist/*": "./dist/*",
+    "./package.json": "./package.json"
+  },
+  "packageManager": "pnpm@12.5.1"
 }
