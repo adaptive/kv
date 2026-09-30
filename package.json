@@ -43,8 +43,7 @@
   },
   "devDependencies": {
     "@rollup/plugin-terser": "1.0.0",
-    "prettier": "3.9.8",
-    "rollup": "4.63.4",
+    "rollup": "4.63.5",
     "typescript": "7.0.2"
   },
   "files": [
@@ -54,8 +53,8 @@
     "build": "rollup -c",
     "test": "node --test test/*.test.js",
     "test:types": "tsc -p test/tsconfig.json",
-    "format": "prettier --write .",
-    "format:check": "prettier --check .",
+    "format": "oxfmt --write .",
+    "format:check": "oxfmt --check .",
     "check": "npm run format:check && npm run build && npm test && npm run test:types",
     "prepack": "npm run build",
     "dry-run": "npm pack --dry-run"
@@ -71,5 +70,5 @@
     "./dist/*": "./dist/*",
     "./package.json": "./package.json"
   },
-  "packageManager": "pnpm@12.5.1"
+  "packageManager": "pnpm@12.8.1"
 }

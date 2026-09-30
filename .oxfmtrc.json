@@ -1,0 +1,16 @@
+{
+  "printWidth": 80,
+  "sortPackageJson": false,
+  "insertFinalNewline": true,
+  "ignorePatterns": [
+    "node_modules",
+    "dist",
+    "pnpm-lock.yaml",
+    ".pnpm-store",
+    "CODE_OF_CONDUCT.md",
+    ".github/CODEOWNERS",
+    ".github/FUNDING.yml",
+    ".github/dependabot.yml",
+    ".github/workflows/codeql-analysis.yml"
+  ]
+}

@@ -1,7 +1,11 @@
 {
   "customizations": {
     "vscode": {
-      "extensions": ["esbenp.prettier-vscode", "github.copilot"]
+      "extensions": ["oxc.oxc-vscode", "github.copilot"],
+      "settings": {
+        "oxc.path.oxfmt": "oxfmt",
+        "oxc.enable.oxlint": false
+      }
     }
   },
   "build": {
