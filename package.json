@@ -44,7 +44,7 @@
   "devDependencies": {
     "@rollup/plugin-terser": "1.0.0",
     "prettier": "3.9.8",
-    "rollup": "4.63.4",
+    "rollup": "4.63.6",
     "typescript": "7.0.2"
   },
   "files": [
