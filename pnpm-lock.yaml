@@ -171,8 +171,8 @@ importers:
         version: 1.0.20
     devDependencies:
       '@rollup/plugin-terser':
-        specifier: 1.0.0
-        version: 1.0.0(rollup@4.64.0)
+        specifier: 1.0.2
+        version: 1.0.2(rollup@4.64.0)
       rollup:
         specifier: 4.64.0
         version: 4.64.0
@@ -205,8 +205,8 @@ packages:
     os: [linux]
     libc: [glibc]
 
-  '@rollup/plugin-terser@1.0.0':
-    resolution: {integrity: sha512-FnCxhTBx6bMOYQrar6C8h3scPt8/JwIzw3+AJ2K++6guogH5fYaIFia+zZuhqv0eo1RN7W1Pz630SyvLbDjhtQ==}
+  '@rollup/plugin-terser@1.0.2':
+    resolution: {integrity: sha512-+UihHnuLnQDQ/9wog7ym+7oawCXkjTIo0WwkK7s//0mkktTN0VhYk6fGVxH+NtGzW064w5RCGgreMDxRVhHCzw==}
     engines: {node: '>=20.0.0'}
     peerDependencies:
       rollup: ^2.0.0||^3.0.0||^4.0.0
@@ -513,8 +513,8 @@ packages:
     resolution: {integrity: sha512-UjgapumWlbMhkBgzT7Ykc5YXUT46F0iKu8SGXq0bcwP5dz/h0Plj6enJqjz1Zbq2l5WaqYnrVbwWOWMyF3F47g==}
     engines: {node: '>=0.10.0'}
 
-  terser@5.44.0:
-    resolution: {integrity: sha512-nIVck8DK+GM/0Frwd+nIhZ84pR/BX7rmXMfYwyg+Sri5oGVE99/E3KvXqpC2xHFxyqXyGHTKBSioxxplrO4I4w==}
+  terser@5.51.2:
+    resolution: {integrity: sha512-bWnjSNscmuI+GJze6ZupnHP8G/cTcsJF+bXCeQknk2SHQsgbNJnLrqiH9jZ2W4STPVXH2mDKKRX3iwPhc9Cn/Q==}
     engines: {node: '>=10'}
     hasBin: true
 
@@ -547,11 +547,11 @@ snapshots:
   '@napi-rs/lzma-linux-x64-gnu@1.5.1':
     optional: true
 
-  '@rollup/plugin-terser@1.0.0(rollup@4.64.0)':
+  '@rollup/plugin-terser@1.0.2(rollup@4.64.0)':
     dependencies:
       serialize-javascript: 7.1.1
       smob: 1.5.0
-      terser: 5.44.0
+      terser: 5.51.2
     optionalDependencies:
       rollup: 4.64.0
 
@@ -746,7 +746,7 @@ snapshots:
 
   source-map@0.6.1: {}
 
-  terser@5.44.0:
+  terser@5.51.2:
     dependencies:
       '@jridgewell/source-map': 0.3.11
       acorn: 8.15.0
