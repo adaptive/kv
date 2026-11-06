@@ -1,4 +1,4 @@
-import { AwsClient } from "aws4fetch";
+import { S3Client } from "./s3.js";
 
 const encoder = new TextEncoder();
 const decoder = new TextDecoder();
@@ -96,11 +96,10 @@ export default class KV {
     this.namespace = namespace;
     this.config = { ...config, passphrase };
     this.prefix = `${url.href.replace(/\/+$/, "")}/${encodedNamespace}`;
-    this.aws = new AwsClient({
+    this.aws = new S3Client({
       accessKeyId: requiredString(accessKeyId, "accessKeyId"),
       secretAccessKey: requiredString(secretAccessKey, "secretAccessKey"),
       region: requiredString(region, "region"),
-      service: "s3",
     });
   }
 

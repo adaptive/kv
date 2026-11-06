@@ -1,6 +1,6 @@
 {
   "name": "@adaptivelink/kv",
-  "version": "0.2.2",
+  "version": "0.3.0",
   "description": "S3-backed key/value storage for Cloudflare Workers and Fetch-compatible runtimes",
   "module": "./dist/kv.esm.js",
   "types": "./dist/main.d.ts",
@@ -38,14 +38,12 @@
     "type": "github",
     "url": "https://github.com/sponsors/adaptive"
   },
-  "dependencies": {
-    "aws4fetch": "1.0.20"
-  },
   "devDependencies": {
     "typescript": "7.0.2"
   },
   "files": [
-    "dist"
+    "dist",
+    "THIRD_PARTY_NOTICES.md"
   ],
   "scripts": {
     "build": "node scripts/build.js",

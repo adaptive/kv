@@ -1,4 +1,9 @@
-import KV, { KVError, type KVConfig } from "@adaptivelink/kv";
+import KV, {
+  KVError,
+  type KVConfig,
+  type KVRequestInit,
+  type KVTransport,
+} from "@adaptivelink/kv";
 
 const config: KVConfig = {
   endpoint: "https://bucket.example.com",
@@ -15,6 +20,20 @@ const saved: true = await kv.put("key", "value");
 const deleted: true = await kv.delete("key");
 const error: Error = new KVError(new Response(null, { status: 403 }), "GET");
 void [text, count, unknownJson, saved, deleted, error];
+
+const transport: KVTransport = kv.aws;
+const requestInit: KVRequestInit = {
+  method: "GET",
+  aws: { datetime: "20261106T120000Z", signQuery: true },
+};
+const signed: Request = await transport.sign(
+  new URL(config.endpoint!),
+  requestInit,
+);
+const response: Response = await transport.fetch(signed);
+transport.retries = 0;
+transport.fetch = async () => new Response("mocked");
+void response;
 
 // @ts-expect-error Unsupported read format.
 kv.get("key", "binary");

@@ -1,4 +1,41 @@
-import type { AwsClient } from "aws4fetch";
+/** Per-request overrides for the signing transport. */
+export interface KVSigningOptions {
+  accessKeyId?: string;
+  secretAccessKey?: string;
+  sessionToken?: string;
+  service?: string;
+  region?: string;
+  cache?: Map<string, ArrayBuffer>;
+  datetime?: string;
+  signQuery?: boolean;
+  appendSessionToken?: boolean;
+  allHeaders?: boolean;
+  singleEncode?: boolean;
+}
+
+export type KVRequestInit = RequestInit & { aws?: KVSigningOptions };
+
+/** Signing and fetch hooks exposed by KV's built-in transport. */
+export interface KVTransport {
+  accessKeyId: string;
+  secretAccessKey: string;
+  sessionToken: string | undefined;
+  service: string | undefined;
+  region: string | undefined;
+  cache: Map<string, ArrayBuffer>;
+  /** Number of retries after the first attempt; defaults to 10. */
+  retries: number;
+  /** Base delay for exponential full-jitter retries; defaults to 50 ms. */
+  initRetryMs: number;
+  sign(
+    input: Request | { toString(): string },
+    init?: KVRequestInit | null,
+  ): Promise<Request>;
+  fetch(
+    input: Request | { toString(): string },
+    init?: KVRequestInit | null,
+  ): Promise<Response>;
+}
 
 export interface KVConfig {
   /** Bucket URL, optionally including a path (for path-style S3 endpoints). */
@@ -21,7 +58,7 @@ export default class KV {
   namespace: string;
   config: KVConfig & { passphrase: string | null };
   prefix: string;
-  aws: AwsClient;
+  aws: KVTransport;
   /** Store a string, or an empty string when value is omitted. */
   put(key: string, value?: string): Promise<true>;
   /** Missing keys return null. */

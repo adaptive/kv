@@ -200,7 +200,7 @@ test("all operations use the same encoded key, namespace and endpoint path", asy
   assert.equal(new URL(expected).hash, "");
 });
 
-test("real aws4fetch signing preserves special keys on the Fetch request", async (t) => {
+test("S3 signing preserves special keys on the Fetch request", async (t) => {
   const kv = new KV("namespace", config);
   const requests = [];
   t.mock.method(globalThis, "fetch", async (request) => {

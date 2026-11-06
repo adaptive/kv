@@ -1,0 +1,210 @@
+{
+  "provenance": {
+    "package": "aws4fetch@1.0.20",
+    "credentials": "non-secret public test values only",
+    "generated": "2026-11-06",
+    "service": "s3"
+  },
+  "cases": [
+    {
+      "id": "simple-get",
+      "input": {
+        "url": "https://bucket.example.com/namespace/key",
+        "method": "GET",
+        "region": "eu-west-1",
+        "datetime": "20261106T123456Z"
+      },
+      "expected": {
+        "url": "https://bucket.example.com/namespace/key",
+        "method": "GET",
+        "headers": {
+          "authorization": "AWS4-HMAC-SHA256 Credential=test-access-key/20261106/eu-west-1/s3/aws4_request, SignedHeaders=host;x-amz-content-sha256;x-amz-date, Signature=3ae8bab913ac1fc60228710c41cf3658b649eb48fb4a9ffaa4d16cf0a7843128",
+          "x-amz-content-sha256": "UNSIGNED-PAYLOAD",
+          "x-amz-date": "20261106T123456Z"
+        },
+        "body": null
+      }
+    },
+    {
+      "id": "unicode-put",
+      "input": {
+        "url": "https://bucket.example.com/namespace/caf%C3%A9",
+        "method": "PUT",
+        "body": "Hello 🌍",
+        "region": "eu-west-1",
+        "datetime": "20261106T123456Z"
+      },
+      "expected": {
+        "url": "https://bucket.example.com/namespace/caf%C3%A9",
+        "method": "PUT",
+        "headers": {
+          "authorization": "AWS4-HMAC-SHA256 Credential=test-access-key/20261106/eu-west-1/s3/aws4_request, SignedHeaders=host;x-amz-content-sha256;x-amz-date, Signature=6ff76dc62031e0e3ecaa6fb31c8c08125c8c635fd39a0eec2b8862a721c7121c",
+          "content-type": "text/plain;charset=UTF-8",
+          "x-amz-content-sha256": "UNSIGNED-PAYLOAD",
+          "x-amz-date": "20261106T123456Z"
+        },
+        "body": "Hello 🌍"
+      }
+    },
+    {
+      "id": "empty-put",
+      "input": {
+        "url": "https://bucket.example.com/namespace/empty",
+        "method": "PUT",
+        "body": "",
+        "region": "us-east-1",
+        "datetime": "20261106T000001Z"
+      },
+      "expected": {
+        "url": "https://bucket.example.com/namespace/empty",
+        "method": "PUT",
+        "headers": {
+          "authorization": "AWS4-HMAC-SHA256 Credential=test-access-key/20261106/us-east-1/s3/aws4_request, SignedHeaders=host;x-amz-content-sha256;x-amz-date, Signature=685e41d88bedf10b43fd1df1ae31b602d7e280aaf463a00ed13cdda0f6132ab7",
+          "content-type": "text/plain;charset=UTF-8",
+          "x-amz-content-sha256": "UNSIGNED-PAYLOAD",
+          "x-amz-date": "20261106T000001Z"
+        },
+        "body": ""
+      }
+    },
+    {
+      "id": "delete-special-key",
+      "input": {
+        "url": "https://bucket.example.com/ns/a%3Fb%23c%20%252F%2B%21%27%28%29%2A",
+        "method": "DELETE",
+        "region": "ap-southeast-2",
+        "datetime": "20260101T000000Z"
+      },
+      "expected": {
+        "url": "https://bucket.example.com/ns/a%3Fb%23c%20%252F%2B%21%27%28%29%2A",
+        "method": "DELETE",
+        "headers": {
+          "authorization": "AWS4-HMAC-SHA256 Credential=test-access-key/20260101/ap-southeast-2/s3/aws4_request, SignedHeaders=host;x-amz-content-sha256;x-amz-date, Signature=94cec00205812cb052b14b4415e61a304cc0a6b5c106ee712426a0096f59795c",
+          "x-amz-content-sha256": "UNSIGNED-PAYLOAD",
+          "x-amz-date": "20260101T000000Z"
+        },
+        "body": null
+      }
+    },
+    {
+      "id": "path-style-port",
+      "input": {
+        "url": "https://s3.example.com:9443/bucket//folder%2Fsegment/key",
+        "method": "GET",
+        "region": "ap-southeast-2",
+        "datetime": "20251231T235959Z"
+      },
+      "expected": {
+        "url": "https://s3.example.com:9443/bucket//folder%2Fsegment/key",
+        "method": "GET",
+        "headers": {
+          "authorization": "AWS4-HMAC-SHA256 Credential=test-access-key/20251231/ap-southeast-2/s3/aws4_request, SignedHeaders=host;x-amz-content-sha256;x-amz-date, Signature=1b83ed723c85e228e940aae03c8c7082079dbead6e0fe0676292b5332e644d03",
+          "x-amz-content-sha256": "UNSIGNED-PAYLOAD",
+          "x-amz-date": "20251231T235959Z"
+        },
+        "body": null
+      }
+    },
+    {
+      "id": "literal-plus-percent",
+      "input": {
+        "url": "https://store.example.net:8443/bucket/%252F/%2B/%25?versionId=a%2Fb&response-content-type=text%2Fplain",
+        "method": "GET",
+        "region": "us-east-2",
+        "datetime": "20260304T050607Z"
+      },
+      "expected": {
+        "url": "https://store.example.net:8443/bucket/%252F/%2B/%25?versionId=a%2Fb&response-content-type=text%2Fplain",
+        "method": "GET",
+        "headers": {
+          "authorization": "AWS4-HMAC-SHA256 Credential=test-access-key/20260304/us-east-2/s3/aws4_request, SignedHeaders=host;x-amz-content-sha256;x-amz-date, Signature=dfddc37b4fa3cb3dab8e2e942edcc24acc7407389d18f3c2749537d4195ac384",
+          "x-amz-content-sha256": "UNSIGNED-PAYLOAD",
+          "x-amz-date": "20260304T050607Z"
+        },
+        "body": null
+      }
+    },
+    {
+      "id": "duplicate-query",
+      "input": {
+        "url": "https://bucket.example.com/key?partNumber=2&partNumber=1&x=%2F&x=+",
+        "method": "GET",
+        "region": "eu-central-1",
+        "datetime": "20261106T123456Z"
+      },
+      "expected": {
+        "url": "https://bucket.example.com/key?partNumber=2&partNumber=1&x=%2F&x=+",
+        "method": "GET",
+        "headers": {
+          "authorization": "AWS4-HMAC-SHA256 Credential=test-access-key/20261106/eu-central-1/s3/aws4_request, SignedHeaders=host;x-amz-content-sha256;x-amz-date, Signature=88aa0a7ee54ee535e276a66392093c6ecfb7675f5b201bc37a5feed1278966bb",
+          "x-amz-content-sha256": "UNSIGNED-PAYLOAD",
+          "x-amz-date": "20261106T123456Z"
+        },
+        "body": null
+      }
+    },
+    {
+      "id": "custom-header-payload-hash",
+      "input": {
+        "url": "https://bucket.example.com/object",
+        "method": "PUT",
+        "body": "payload",
+        "headers": {
+          "X-Amz-Content-Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "X-Amz-Meta-Name": "a   b"
+        },
+        "region": "us-east-1",
+        "datetime": "20260203T040506Z"
+      },
+      "expected": {
+        "url": "https://bucket.example.com/object",
+        "method": "PUT",
+        "headers": {
+          "authorization": "AWS4-HMAC-SHA256 Credential=test-access-key/20260203/us-east-1/s3/aws4_request, SignedHeaders=host;x-amz-content-sha256;x-amz-date;x-amz-meta-name, Signature=d0fee24109c2a7d584679138686a4fb5748d1edee34f1a9ade150a375cbb475a",
+          "content-type": "text/plain;charset=UTF-8",
+          "x-amz-content-sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "x-amz-date": "20260203T040506Z",
+          "x-amz-meta-name": "a   b"
+        },
+        "body": "payload"
+      }
+    },
+    {
+      "id": "session-token",
+      "input": {
+        "url": "https://bucket.example.com/token-object",
+        "method": "GET",
+        "region": "us-west-2",
+        "datetime": "20261106T123456Z",
+        "sessionToken": "test-session-token"
+      },
+      "expected": {
+        "url": "https://bucket.example.com/token-object",
+        "method": "GET",
+        "headers": {
+          "authorization": "AWS4-HMAC-SHA256 Credential=test-access-key/20261106/us-west-2/s3/aws4_request, SignedHeaders=host;x-amz-content-sha256;x-amz-date;x-amz-security-token, Signature=7cc4d027e0607174321db0814b0290bbf38a53bde73f3705e818c78740680a47",
+          "x-amz-content-sha256": "UNSIGNED-PAYLOAD",
+          "x-amz-date": "20261106T123456Z",
+          "x-amz-security-token": "test-session-token"
+        },
+        "body": null
+      }
+    },
+    {
+      "id": "query-signing",
+      "input": {
+        "url": "https://bucket.example.com/query-object?response-content-disposition=attachment%3B+filename%3D%22hello+world%22",
+        "method": "GET",
+        "region": "eu-west-1",
+        "datetime": "20261106T123456Z",
+        "signQuery": true
+      },
+      "expected": {
+        "url": "https://bucket.example.com/query-object?response-content-disposition=attachment%3B+filename%3D%22hello+world%22&X-Amz-Date=20261106T123456Z&X-Amz-Expires=86400&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=test-access-key%2F20261106%2Feu-west-1%2Fs3%2Faws4_request&X-Amz-SignedHeaders=host&X-Amz-Signature=871bcb7a355edb4ddbff91e911cf7b4991bbafefd30213e83e18166fda061319",
+        "method": "GET",
+        "headers": {},
+        "body": null
+      }
+    }
+  ]
+}
