@@ -42,8 +42,8 @@
     "aws4fetch": "1.0.20"
   },
   "devDependencies": {
-    "@rollup/plugin-terser": "1.0.0",
-    "rollup": "4.64.0",
+    "@rollup/plugin-terser": "1.0.2",
+    "rollup": "4.68.0",
     "typescript": "7.0.2"
   },
   "files": [
@@ -70,5 +70,5 @@
     "./dist/*": "./dist/*",
     "./package.json": "./package.json"
   },
-  "packageManager": "pnpm@12.8.1"
+  "packageManager": "pnpm@12.18.0"
 }
