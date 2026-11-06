@@ -1,1 +1,217 @@
-import{AwsClient as t}from"aws4fetch";const e=new TextEncoder,r=new TextDecoder;function s(t,e){if("string"!=typeof t||0===t.length)throw new TypeError(`${e} must be a non-empty string`);return t.split("/").map(t=>{if("."===t||".."===t)throw new TypeError(`${e} cannot contain . or .. path segments`);return encodeURIComponent(t).replace(/[!'()*]/g,t=>`%${t.charCodeAt(0).toString(16).toUpperCase()}`)}).join("/")}function n(t,e){if("string"!=typeof t||""===t.trim())throw new TypeError(`${e} must be a non-empty string`);return t}async function a(t,r){n(t,"passphrase");const s=await crypto.subtle.digest("SHA-256",e.encode(t));return crypto.subtle.importKey("raw",s,"AES-GCM",!1,[r])}class o extends Error{constructor(t,e){super(`KV ${e} failed: ${t.status} ${t.statusText}`.trim()),this.name="KVError",this.status=t.status,this.method=e}}class i{constructor(e="main",r={}){if(null===r||"object"!=typeof r||Array.isArray(r))throw new TypeError("config must be an object");const a=s(e,"namespace"),o="undefined"==typeof KV_S3_BUCKET?void 0:KV_S3_BUCKET,i=r.endpoint??(o?`https://${o}`:void 0),c=new URL(n(i,"endpoint"));if(!["https:","http:"].includes(c.protocol)||c.username||c.password||c.search||c.hash)throw new TypeError("endpoint must be an HTTP(S) URL without credentials, a query, or a fragment");const p=r.accessKeyId??("undefined"==typeof KV_ACCESS_KEY_ID?void 0:KV_ACCESS_KEY_ID),u=r.secretAccessKey??("undefined"==typeof KV_SECRET_ACCESS_KEY?void 0:KV_SECRET_ACCESS_KEY),y=r.region??("undefined"==typeof KV_DEFAULT_REGION?void 0:KV_DEFAULT_REGION),h=r.passphrase??null;null!==h&&n(h,"passphrase"),this.namespace=e,this.config={...r,passphrase:h},this.prefix=`${c.href.replace(/\/+$/,"")}/${a}`,this.aws=new t({accessKeyId:n(p,"accessKeyId"),secretAccessKey:n(u,"secretAccessKey"),region:n(y,"region"),service:"s3"})}async Encrypt(t,r){if("string"!=typeof t)throw new TypeError("value must be a string");const s=await a(r,"encrypt"),n=crypto.getRandomValues(new Uint8Array(12)),o=new Uint8Array(await crypto.subtle.encrypt({name:"AES-GCM",iv:n},s,e.encode(t)));let i="";for(let t=0;t<o.length;t+=8192)i+=String.fromCharCode(...o.subarray(t,t+8192));return Array.from(n,t=>t.toString(16).padStart(2,"0")).join("")+btoa(i)}async Decrypt(t,e){if("string"!=typeof t||!/^[\da-f]{24}[A-Za-z0-9+/]+={0,2}$/i.test(t))throw new Error("Invalid encrypted KV value");const s=Uint8Array.from(t.slice(0,24).match(/.{2}/g),t=>parseInt(t,16));let n;try{n=Uint8Array.from(atob(t.slice(24)),t=>t.charCodeAt(0))}catch(t){throw new Error("Invalid encrypted KV value",{cause:t})}if(n.length<16)throw new Error("Invalid encrypted KV value");const o=await a(e,"decrypt");return r.decode(await crypto.subtle.decrypt({name:"AES-GCM",iv:s},o,n))}_url(t){const e=null===this.config.passphrase?"":".enc";return`${this.prefix}/${s(t,"key")}${e}`}async _request(t,e,r){const s=await this.aws.fetch(t,{method:e,...void 0===r?{}:{body:r}});if(!s.ok&&(404!==s.status||"GET"!==e&&"DELETE"!==e))throw await(s.body?.cancel()),new o(s,e);return s}async put(t,e=""){const r=this._url(t);if("string"!=typeof e)throw new TypeError("value must be a string");const s=null===this.config.passphrase?e:await this.Encrypt(e,this.config.passphrase),n=await this._request(r,"PUT",s);return await(n.body?.cancel()),!0}async get(t,e="text"){const r=this._url(t);if("text"!==e&&"json"!==e)throw new TypeError('type must be "text" or "json"');const s=await this._request(r,"GET");if(404===s.status)return await(s.body?.cancel()),null;const n=await s.text(),a=null===this.config.passphrase?n:await this.Decrypt(n,this.config.passphrase);return"json"===e?JSON.parse(a):a}async delete(t){const e=await this._request(this._url(t),"DELETE");return await(e.body?.cancel()),!0}}export{o as KVError,i as default};
+import { AwsClient } from "aws4fetch";
+
+const encoder = new TextEncoder();
+const decoder = new TextDecoder();
+
+function encodePath(value, name) {
+  if (typeof value !== "string" || value.length === 0) {
+    throw new TypeError(`${name} must be a non-empty string`);
+  }
+  return value
+    .split("/")
+    .map((segment) => {
+      // URL parsers normalize these even when their dots are percent-encoded.
+      if (segment === "." || segment === "..") {
+        throw new TypeError(`${name} cannot contain . or .. path segments`);
+      }
+      return encodeURIComponent(segment).replace(
+        /[!'()*]/g,
+        (character) => `%${character.charCodeAt(0).toString(16).toUpperCase()}`,
+      );
+    })
+    .join("/");
+}
+
+function requiredString(value, name) {
+  if (typeof value !== "string" || value.trim() === "") {
+    throw new TypeError(`${name} must be a non-empty string`);
+  }
+  return value;
+}
+
+async function encryptionKey(password, usage) {
+  requiredString(password, "passphrase");
+  // Preserve the original key derivation so existing encrypted values stay readable.
+  const hash = await crypto.subtle.digest("SHA-256", encoder.encode(password));
+  return crypto.subtle.importKey("raw", hash, "AES-GCM", false, [usage]);
+}
+
+/** An unsuccessful response from the storage provider. */
+export class KVError extends Error {
+  constructor(response, method) {
+    super(
+      `KV ${method} failed: ${response.status} ${response.statusText}`.trim(),
+    );
+    this.name = "KVError";
+    this.status = response.status;
+    this.method = method;
+  }
+}
+
+/** S3-backed key/value storage for runtimes with Fetch and Web Crypto. */
+export default class KV {
+  constructor(namespace = "main", config = {}) {
+    if (
+      config === null ||
+      typeof config !== "object" ||
+      Array.isArray(config)
+    ) {
+      throw new TypeError("config must be an object");
+    }
+
+    const encodedNamespace = encodePath(namespace, "namespace");
+    const legacyBucket =
+      typeof KV_S3_BUCKET === "undefined" ? undefined : KV_S3_BUCKET;
+    const endpoint =
+      config.endpoint ?? (legacyBucket ? `https://${legacyBucket}` : undefined);
+    const url = new URL(requiredString(endpoint, "endpoint"));
+    if (
+      !["https:", "http:"].includes(url.protocol) ||
+      url.username ||
+      url.password ||
+      url.search ||
+      url.hash
+    ) {
+      throw new TypeError(
+        "endpoint must be an HTTP(S) URL without credentials, a query, or a fragment",
+      );
+    }
+
+    const accessKeyId =
+      config.accessKeyId ??
+      (typeof KV_ACCESS_KEY_ID === "undefined" ? undefined : KV_ACCESS_KEY_ID);
+    const secretAccessKey =
+      config.secretAccessKey ??
+      (typeof KV_SECRET_ACCESS_KEY === "undefined"
+        ? undefined
+        : KV_SECRET_ACCESS_KEY);
+    const region =
+      config.region ??
+      (typeof KV_DEFAULT_REGION === "undefined"
+        ? undefined
+        : KV_DEFAULT_REGION);
+    const passphrase = config.passphrase ?? null;
+    if (passphrase !== null) requiredString(passphrase, "passphrase");
+
+    this.namespace = namespace;
+    this.config = { ...config, passphrase };
+    this.prefix = `${url.href.replace(/\/+$/, "")}/${encodedNamespace}`;
+    this.aws = new AwsClient({
+      accessKeyId: requiredString(accessKeyId, "accessKeyId"),
+      secretAccessKey: requiredString(secretAccessKey, "secretAccessKey"),
+      region: requiredString(region, "region"),
+      service: "s3",
+    });
+  }
+
+  /** Encrypt using the legacy 24-character IV hex + base64 ciphertext format. */
+  async Encrypt(plaintext, password) {
+    if (typeof plaintext !== "string")
+      throw new TypeError("value must be a string");
+    const key = await encryptionKey(password, "encrypt");
+    const iv = crypto.getRandomValues(new Uint8Array(12));
+    const encrypted = new Uint8Array(
+      await crypto.subtle.encrypt(
+        { name: "AES-GCM", iv },
+        key,
+        encoder.encode(plaintext),
+      ),
+    );
+    let binary = "";
+    // Bound each call's argument count for large values.
+    for (let offset = 0; offset < encrypted.length; offset += 8192) {
+      binary += String.fromCharCode(
+        ...encrypted.subarray(offset, offset + 8192),
+      );
+    }
+    const ivHex = Array.from(iv, (byte) =>
+      byte.toString(16).padStart(2, "0"),
+    ).join("");
+    return ivHex + btoa(binary);
+  }
+
+  async Decrypt(ciphertext, password) {
+    if (
+      typeof ciphertext !== "string" ||
+      !/^[\da-f]{24}[A-Za-z0-9+/]+={0,2}$/i.test(ciphertext)
+    ) {
+      throw new Error("Invalid encrypted KV value");
+    }
+    const iv = Uint8Array.from(ciphertext.slice(0, 24).match(/.{2}/g), (byte) =>
+      parseInt(byte, 16),
+    );
+    let encrypted;
+    try {
+      encrypted = Uint8Array.from(atob(ciphertext.slice(24)), (character) =>
+        character.charCodeAt(0),
+      );
+    } catch (cause) {
+      throw new Error("Invalid encrypted KV value", { cause });
+    }
+    if (encrypted.length < 16) throw new Error("Invalid encrypted KV value");
+    const key = await encryptionKey(password, "decrypt");
+    return decoder.decode(
+      await crypto.subtle.decrypt({ name: "AES-GCM", iv }, key, encrypted),
+    );
+  }
+
+  _url(key) {
+    const suffix = this.config.passphrase === null ? "" : ".enc";
+    return `${this.prefix}/${encodePath(key, "key")}${suffix}`;
+  }
+
+  async _request(url, method, body) {
+    const response = await this.aws.fetch(url, {
+      method,
+      ...(body === undefined ? {} : { body }),
+    });
+    if (method !== "GET" || !response.ok) {
+      try {
+        await response.body?.cancel();
+      } catch {
+        // Discarding an unread body must not hide the HTTP result.
+      }
+    }
+    if (
+      !response.ok &&
+      !(response.status === 404 && (method === "GET" || method === "DELETE"))
+    ) {
+      throw new KVError(response, method);
+    }
+    return response;
+  }
+
+  /** Store a string. Serialize objects with JSON.stringify before writing. */
+  async put(key, value = "") {
+    const url = this._url(key);
+    if (typeof value !== "string")
+      throw new TypeError("value must be a string");
+    const body =
+      this.config.passphrase === null
+        ? value
+        : await this.Encrypt(value, this.config.passphrase);
+    await this._request(url, "PUT", body);
+    return true;
+  }
+
+  /** Return text or parsed JSON; missing keys return null. */
+  async get(key, type = "text") {
+    const url = this._url(key);
+    if (type !== "text" && type !== "json")
+      throw new TypeError('type must be "text" or "json"');
+    const response = await this._request(url, "GET");
+    if (response.status === 404) return null;
+    const stored = await response.text();
+    const value =
+      this.config.passphrase === null
+        ? stored
+        : await this.Decrypt(stored, this.config.passphrase);
+    return type === "json" ? JSON.parse(value) : value;
+  }
+
+  /** Delete a value. Missing keys are already deleted and return true. */
+  async delete(key) {
+    await this._request(this._url(key), "DELETE");
+    return true;
+  }
+}

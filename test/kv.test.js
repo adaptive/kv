@@ -103,6 +103,87 @@ test("network failures propagate", async () => {
   }
 });
 
+test("unread response bodies are canceled once and cleanup failures do not mask results", async () => {
+  const { kv } = store();
+  for (const { method, status, operation, expected } of [
+    {
+      method: "PUT",
+      status: 200,
+      operation: () => kv.put("key", "value"),
+      expected: true,
+    },
+    {
+      method: "DELETE",
+      status: 200,
+      operation: () => kv.delete("key"),
+      expected: true,
+    },
+    {
+      method: "GET",
+      status: 404,
+      operation: () => kv.get("key"),
+      expected: null,
+    },
+    {
+      method: "DELETE",
+      status: 404,
+      operation: () => kv.delete("key"),
+      expected: true,
+    },
+    {
+      method: "GET",
+      status: 403,
+      operation: () => kv.get("key"),
+      expected: KVError,
+    },
+  ]) {
+    let cancellations = 0;
+    kv.aws.fetch = async () =>
+      new Response(
+        new ReadableStream({
+          cancel() {
+            cancellations += 1;
+            return Promise.reject(new Error("cleanup failed"));
+          },
+        }),
+        { status },
+      );
+
+    if (expected === KVError) {
+      await assert.rejects(operation, (error) => {
+        assert.ok(error instanceof KVError);
+        assert.equal(error.status, status);
+        assert.equal(error.method, method);
+        return true;
+      });
+    } else {
+      assert.equal(await operation(), expected);
+    }
+    assert.equal(cancellations, 1);
+  }
+});
+
+test("successful GET body read errors still propagate", async () => {
+  const { kv } = store();
+  const failure = new Error("body read failed");
+  let cancellations = 0;
+  kv.aws.fetch = async () =>
+    new Response(
+      new ReadableStream({
+        start(controller) {
+          controller.error(failure);
+        },
+        cancel() {
+          cancellations += 1;
+        },
+      }),
+      { status: 200 },
+    );
+
+  await assert.rejects(kv.get("key"), (error) => error === failure);
+  assert.equal(cancellations, 0);
+});
+
 test("all operations use the same encoded key, namespace and endpoint path", async () => {
   const { kv, calls } = store(
     { endpoint: "https://example.com/bucket///" },

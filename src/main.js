@@ -165,12 +165,17 @@ export default class KV {
       method,
       ...(body === undefined ? {} : { body }),
     });
+    if (method !== "GET" || !response.ok) {
+      try {
+        await response.body?.cancel();
+      } catch {
+        // Discarding an unread body must not hide the HTTP result.
+      }
+    }
     if (
       !response.ok &&
       !(response.status === 404 && (method === "GET" || method === "DELETE"))
     ) {
-      // Release the response stream without including provider bodies in errors.
-      await response.body?.cancel();
       throw new KVError(response, method);
     }
     return response;
@@ -185,8 +190,7 @@ export default class KV {
       this.config.passphrase === null
         ? value
         : await this.Encrypt(value, this.config.passphrase);
-    const response = await this._request(url, "PUT", body);
-    await response.body?.cancel();
+    await this._request(url, "PUT", body);
     return true;
   }
 
@@ -196,10 +200,7 @@ export default class KV {
     if (type !== "text" && type !== "json")
       throw new TypeError('type must be "text" or "json"');
     const response = await this._request(url, "GET");
-    if (response.status === 404) {
-      await response.body?.cancel();
-      return null;
-    }
+    if (response.status === 404) return null;
     const stored = await response.text();
     const value =
       this.config.passphrase === null
@@ -210,8 +211,7 @@ export default class KV {
 
   /** Delete a value. Missing keys are already deleted and return true. */
   async delete(key) {
-    const response = await this._request(this._url(key), "DELETE");
-    await response.body?.cancel();
+    await this._request(this._url(key), "DELETE");
     return true;
   }
 }
